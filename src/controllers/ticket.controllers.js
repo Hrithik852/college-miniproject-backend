@@ -3,17 +3,21 @@ const Ticket = require('../models/ticket.model');
 // Student: Raise a new ticket
 const raiseTicket = async (req, res) => {
     try {
-        const { category, asset, description, imageUrl } = req.body;
+        const { category, subject, description, imageUrl } = req.body;
         const newTicket = new Ticket({
             student: req.user.id,
             category,
-            asset,
+            subject,
             description,
             imageUrl,
             department: req.user.department // Route based on student's department
         });
         await newTicket.save();
-        res.status(201).json({ message: "Ticket raised successfully", ticket: newTicket });
+        res.status(201).json({
+            message: "Ticket raised successfully",
+            ticketId: newTicket.ticketId,
+            ticket: newTicket
+        });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -49,7 +53,7 @@ const resolveTicket = async (req, res) => {
         const { ticketId } = req.params;
         const { actionTaken, remarks } = req.body;
 
-        const ticket = await Ticket.findByIdAndUpdate(ticketId, {
+        const ticket = await Ticket.findOneAndUpdate({ ticketId: ticketId }, {
             status: 'resolved',
             resolution: {
                 actionTaken,

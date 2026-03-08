@@ -23,6 +23,12 @@ const BaseUserSchema = new mongoose.Schema({
             message: props => `${props.value} is not a valid email format for the selected role!`
         }
     },
+    firstName: { type: String, default: '' },
+    lastName: { type: String, default: '' },
+    phone: { type: String, default: '' },
+    gender: { type: String, enum: ['', 'male', 'female', 'other'], default: '' },
+    institution: { type: String, default: '' },
+    collegeId: { type: String, default: '' },
     password: {
         type: String,
         required: [true, 'password required'],
@@ -35,17 +41,32 @@ const BaseUserSchema = new mongoose.Schema({
     },
     department: {
         type: String,
-        required: [true, 'department is required'],
-        enum: ['cse', 'mech', 'eee', 'ece', 'ds']
+        required: function() {
+            return this.role !== 'principal';
+        },
+        enum: {
+            values: ['cse', 'mech', 'eee', 'ece', ''],
+            message: '{VALUE} is not a valid department'
+        }
+    },
+    csSection: {
+        type: String,
+        enum: {
+            values: ['CS A', 'CS B', 'DS', ''],
+            message: '{VALUE} is not a valid CS section'
+        },
+        default: ''
+    },
+    profileImage: {
+        type: String,
+        default: ''
     }
 }, { discriminatorKey: 'role', collection: 'users', timestamps: true }); 
-
 // Hash password before saving
 BaseUserSchema.pre('save', async function() {
     if (!this.isModified('password')) return;
     this.password = await bcrypt.hash(this.password, 10);
 });
-
 // Method to compare password
 BaseUserSchema.methods.comparePassword = async function(candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
@@ -53,8 +74,14 @@ BaseUserSchema.methods.comparePassword = async function(candidatePassword) {
 
 const User = mongoose.model('User', BaseUserSchema);
 
-// Discriminators now don't need to redefine email
-const Student = User.discriminator('student', new mongoose.Schema({}));
+const Student = User.discriminator('student', new mongoose.Schema({
+    batch: {
+        type: String, // e.g., '2022-2026' or 'CS-B'
+        required: [true, 'batch is required']
+    }
+}));
 const Faculty = User.discriminator('faculty', new mongoose.Schema({}));
+const HOD = User.discriminator('hod', new mongoose.Schema({}));
+const Principal = User.discriminator('principal', new mongoose.Schema({}));
 
-module.exports = { User, Student, Faculty };
+module.exports = { User, Student, Faculty, HOD, Principal };

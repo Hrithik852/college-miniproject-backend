@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const TicketSchema = new mongoose.Schema({
+    ticketId: {
+        type: String,
+        unique: true
+    },
     student: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -11,9 +15,9 @@ const TicketSchema = new mongoose.Schema({
         required: [true, 'Category is required'],
         enum: ['infrastructure', 'academics', 'hygiene']
     },
-    asset: {
+    subject: {
         type: String,
-        required: [true, 'Asset is required'] // e.g., Fan, Projector, Bench
+        required: [true, 'Subject is required']
     },
     description: {
         type: String,
@@ -25,12 +29,21 @@ const TicketSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['open', 'in-progress', 'resolved', 're-opened'],
-        default: 'open'
+        enum: ['Pending', 'In Progress', 'Resolved', 'Re-opened'],
+        default: 'Pending'
     },
     department: {
         type: String,
-        required: true // Routing to relevant HOD
+        required: true
+    },
+    forwardedToPrincipal: {
+        type: Boolean,
+        default: false
+    },
+    urgency: {
+        type: String,
+        enum: ['normal', 'high'],
+        default: 'normal'
     },
     resolution: {
         actionTaken: String,
@@ -41,7 +54,14 @@ const TicketSchema = new mongoose.Schema({
         },
         resolvedAt: Date
     }
-}, { timestamps: true });
+    }, { timestamps: true });
 
+    // Generate unique ticket ID before saving
+    TicketSchema.pre('save', async function() {
+    if (!this.ticketId) {
+        const randomNum = Math.floor(1000 + Math.random() * 9000); // 4-digit number
+        this.ticketId = `STU-${randomNum}`;
+    }
+    });
 const Ticket = mongoose.model('Ticket', TicketSchema);
 module.exports = Ticket;
