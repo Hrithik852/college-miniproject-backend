@@ -1,0 +1,304 @@
+// ER Diagram - Chen's Notation
+// College Feedback & Ticket Management System
+// Generated: 2026-03-24T08:18:27.668Z
+//
+// To render: dot -Tpng er-diagram-chen.dot -o er-diagram-chen.png
+//        or: dot -Tsvg er-diagram-chen.dot -o er-diagram-chen.svg
+
+digraph ER {
+    // Graph settings
+    graph [
+        rankdir=TB,
+        splines=ortho,
+        nodesep=0.8,
+        ranksep=1.2,
+        fontname="Arial",
+        fontsize=12,
+        label="\nER Diagram - Chen's Notation\nCollege Feedback & Ticket Management System\n",
+        labelloc=t,
+        pad=0.5
+    ];
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+
+    // ==========================================
+    // ENTITY DEFINITIONS (Rectangles)
+    // ==========================================
+
+    // Strong Entities (Regular rectangles)
+    node [shape=box, style=filled, fillcolor="#a5d6a7", color="#2e7d32", penwidth=2];
+    USER [label="USER"];
+    TICKET [label="TICKET"];
+    FEEDBACK [label="FEEDBACK"];
+    SUBMISSION [label="SUBMISSION"];
+    NOTIFICATION [label="NOTIFICATION"];
+
+    // Weak Entities (Double-bordered rectangles)
+    node [shape=box, style=filled, fillcolor="#ffcc80", color="#e65100", penwidth=2, peripheries=2];
+    QUESTION [label="QUESTION"];
+    RESPONSE [label="RESPONSE"];
+
+    // Subtype Entities (for specialization)
+    node [shape=box, style=filled, fillcolor="#b3e5fc", color="#0277bd", penwidth=2, peripheries=1];
+    STUDENT [label="STUDENT"];
+    FACULTY [label="FACULTY"];
+    HOD [label="HOD"];
+    PRINCIPAL [label="PRINCIPAL"];
+
+    // ==========================================
+    // ATTRIBUTE DEFINITIONS (Ellipses)
+    // ==========================================
+
+    // --- USER Attributes ---
+    node [shape=ellipse, style=filled, fillcolor="#fff9c4", color="#f9a825", penwidth=1, peripheries=1];
+
+    // Key attribute (underlined via HTML label)
+    USER_id [label=<<U>_id</U>>];
+    USER_email [label=<<U>email</U>>];
+    USER_password [label="password"];
+    USER_name [label="name"];
+    USER_role [label="role"];
+    USER_isVerified [label="isVerified"];
+    USER_createdAt [label="createdAt"];
+
+    // --- STUDENT Attributes ---
+    STU_collegeId [label="collegeId"];
+    STU_batch [label="batch"];
+    STU_department [label="department"];
+    STU_csSection [label="csSection"];
+    STU_googleId [label="googleId"];
+
+    // --- FACULTY Attributes ---
+    FAC_department [label="department"];
+    FAC_designation [label="designation"];
+
+    // --- HOD Attributes ---
+    HOD_department [label="department"];
+
+    // --- TICKET Attributes ---
+    TKT_id [label=<<U>_id</U>>];
+    TKT_ticketId [label=<<U>ticketId</U>>];
+    TKT_title [label="title"];
+    TKT_description [label="description"];
+    TKT_category [label="category"];
+    TKT_status [label="status"];
+    TKT_isUrgent [label="isUrgent"];
+    TKT_imageUrl [label="imageUrl"];
+    TKT_remarks [label="remarks"];
+    TKT_createdAt [label="createdAt"];
+
+    // --- FEEDBACK Attributes ---
+    FB_id [label=<<U>_id</U>>];
+    FB_title [label="title"];
+    FB_description [label="description"];
+    FB_type [label="type"];
+    FB_department [label="department"];
+    FB_batchYear [label="batchYear"];
+    FB_csSection [label="csSection"];
+    FB_isActive [label="isActive"];
+    FB_expiresAt [label="expiresAt"];
+
+    // --- QUESTION Attributes (Weak Entity - partial key)
+    // Partial key shown with dashed underline
+    node [shape=ellipse, style=filled, fillcolor="#ffecb3", color="#ff8f00", penwidth=1];
+    Q_questionId [label=<<U>questionId</U>>];
+    Q_questionText [label="questionText"];
+    Q_questionType [label="questionType"];
+    // Multivalued attribute (double ellipse)
+    node [peripheries=2];
+    Q_options [label="options"];
+    node [peripheries=1];
+    Q_isRequired [label="isRequired"];
+
+    // --- SUBMISSION Attributes ---
+    node [shape=ellipse, style=filled, fillcolor="#fff9c4", color="#f9a825", penwidth=1];
+    SUB_id [label=<<U>_id</U>>];
+    SUB_submittedAt [label="submittedAt"];
+    // Composite attribute
+    node [shape=ellipse, style=filled, fillcolor="#e1bee7", color="#7b1fa2"];
+    SUB_sentiment [label="sentiment"];
+    SUB_sent_label [label="label"];
+    SUB_sent_score [label="score"];
+
+    // --- RESPONSE Attributes (Weak Entity)
+    node [shape=ellipse, style=filled, fillcolor="#ffecb3", color="#ff8f00", penwidth=1];
+    RESP_questionId [label=<<U>questionId</U>>];
+    RESP_answer [label="answer"];
+
+    // --- NOTIFICATION Attributes ---
+    node [shape=ellipse, style=filled, fillcolor="#fff9c4", color="#f9a825", penwidth=1];
+    NOT_id [label=<<U>_id</U>>];
+    NOT_title [label="title"];
+    NOT_message [label="message"];
+    NOT_type [label="type"];
+    NOT_isRead [label="isRead"];
+    NOT_createdAt [label="createdAt"];
+
+    // ==========================================
+    // RELATIONSHIP DEFINITIONS (Diamonds)
+    // ==========================================
+
+    // Regular relationships (single diamond)
+    node [shape=diamond, style=filled, fillcolor="#ef9a9a", color="#c62828", penwidth=2, peripheries=1];
+    REL_CREATES [label="CREATES"];
+    REL_ASSIGNED [label="ASSIGNED\nTO"];
+    REL_CREATES_FORM [label="CREATES\nFORM"];
+    REL_SUBMITS [label="SUBMITS"];
+    REL_FOR [label="FOR"];
+    REL_ANSWERS [label="ANSWERS"];
+    REL_RECEIVES [label="RECEIVES"];
+
+    // Identifying relationships (double diamond)
+    node [shape=diamond, style=filled, fillcolor="#ffab91", color="#d84315", penwidth=2, peripheries=2];
+    REL_HAS [label="HAS"];
+    REL_CONTAINS [label="CONTAINS"];
+
+    // Specialization/Generalization (Triangle/Circle)
+    node [shape=triangle, style=filled, fillcolor="#b0bec5", color="#37474f", penwidth=2, peripheries=1];
+    ISA [label="ISA"];
+
+    // ==========================================
+    // CONNECT ATTRIBUTES TO ENTITIES
+    // ==========================================
+
+    edge [style=solid, color="#666666", penwidth=1, arrowhead=none];
+
+    // USER attributes
+    USER -> USER_id;
+    USER -> USER_email;
+    USER -> USER_password;
+    USER -> USER_name;
+    USER -> USER_role;
+    USER -> USER_isVerified;
+    USER -> USER_createdAt;
+
+    // STUDENT attributes
+    STUDENT -> STU_collegeId;
+    STUDENT -> STU_batch;
+    STUDENT -> STU_department;
+    STUDENT -> STU_csSection;
+    STUDENT -> STU_googleId;
+
+    // FACULTY attributes
+    FACULTY -> FAC_department;
+    FACULTY -> FAC_designation;
+
+    // HOD attributes
+    HOD -> HOD_department;
+
+    // TICKET attributes
+    TICKET -> TKT_id;
+    TICKET -> TKT_ticketId;
+    TICKET -> TKT_title;
+    TICKET -> TKT_description;
+    TICKET -> TKT_category;
+    TICKET -> TKT_status;
+    TICKET -> TKT_isUrgent;
+    TICKET -> TKT_imageUrl;
+    TICKET -> TKT_remarks;
+    TICKET -> TKT_createdAt;
+
+    // FEEDBACK attributes
+    FEEDBACK -> FB_id;
+    FEEDBACK -> FB_title;
+    FEEDBACK -> FB_description;
+    FEEDBACK -> FB_type;
+    FEEDBACK -> FB_department;
+    FEEDBACK -> FB_batchYear;
+    FEEDBACK -> FB_csSection;
+    FEEDBACK -> FB_isActive;
+    FEEDBACK -> FB_expiresAt;
+
+    // QUESTION attributes
+    QUESTION -> Q_questionId;
+    QUESTION -> Q_questionText;
+    QUESTION -> Q_questionType;
+    QUESTION -> Q_options;
+    QUESTION -> Q_isRequired;
+
+    // SUBMISSION attributes
+    SUBMISSION -> SUB_id;
+    SUBMISSION -> SUB_submittedAt;
+    SUBMISSION -> SUB_sentiment;
+    SUB_sentiment -> SUB_sent_label;
+    SUB_sentiment -> SUB_sent_score;
+
+    // RESPONSE attributes
+    RESPONSE -> RESP_questionId;
+    RESPONSE -> RESP_answer;
+
+    // NOTIFICATION attributes
+    NOTIFICATION -> NOT_id;
+    NOTIFICATION -> NOT_title;
+    NOTIFICATION -> NOT_message;
+    NOTIFICATION -> NOT_type;
+    NOTIFICATION -> NOT_isRead;
+    NOTIFICATION -> NOT_createdAt;
+
+    // ==========================================
+    // CONNECT ENTITIES TO RELATIONSHIPS
+    // ==========================================
+
+    // STUDENT ---(1)--- CREATES ---(N)--- TICKET
+    edge [style=solid, color="#333333", penwidth=2];
+    STUDENT -> REL_CREATES [label="1", headlabel=""];
+    REL_CREATES -> TICKET [label="N", taillabel=""];
+
+    // TICKET ---(N)--- ASSIGNED_TO ---(1)--- HOD
+    TICKET -> REL_ASSIGNED [label="N"];
+    REL_ASSIGNED -> HOD [label="1"];
+
+    // FACULTY ---(1)--- CREATES_FORM ---(N)--- FEEDBACK
+    FACULTY -> REL_CREATES_FORM [label="1"];
+    REL_CREATES_FORM -> FEEDBACK [label="N"];
+
+    // FEEDBACK ===(1)=== HAS ===(N)=== QUESTION (Identifying)
+    edge [style=bold, color="#d84315", penwidth=3];
+    FEEDBACK -> REL_HAS [label="1"];
+    REL_HAS -> QUESTION [label="N"];
+
+    // STUDENT ---(1)--- SUBMITS ---(N)--- SUBMISSION
+    edge [style=solid, color="#333333", penwidth=2];
+    STUDENT -> REL_SUBMITS [label="1"];
+    REL_SUBMITS -> SUBMISSION [label="N"];
+
+    // SUBMISSION ---(N)--- FOR ---(1)--- FEEDBACK
+    SUBMISSION -> REL_FOR [label="N"];
+    REL_FOR -> FEEDBACK [label="1"];
+
+    // SUBMISSION ===(1)=== CONTAINS ===(N)=== RESPONSE (Identifying)
+    edge [style=bold, color="#d84315", penwidth=3];
+    SUBMISSION -> REL_CONTAINS [label="1"];
+    REL_CONTAINS -> RESPONSE [label="N"];
+
+    // RESPONSE ---(N)--- ANSWERS ---(1)--- QUESTION
+    edge [style=solid, color="#333333", penwidth=2];
+    RESPONSE -> REL_ANSWERS [label="N"];
+    REL_ANSWERS -> QUESTION [label="1"];
+
+    // USER ---(1)--- RECEIVES ---(N)--- NOTIFICATION
+    USER -> REL_RECEIVES [label="1"];
+    REL_RECEIVES -> NOTIFICATION [label="N"];
+
+    // ==========================================
+    // SPECIALIZATION/GENERALIZATION (ISA)
+    // ==========================================
+
+    edge [style=solid, color="#37474f", penwidth=2];
+    USER -> ISA [label="d,t", fontsize=8];
+    ISA -> STUDENT;
+    ISA -> FACULTY;
+    ISA -> HOD;
+    ISA -> PRINCIPAL;
+
+    // ==========================================
+    // LAYOUT HINTS
+    // ==========================================
+
+    // Group entities by rank for better layout
+    { rank=same; USER; }
+    { rank=same; STUDENT; FACULTY; HOD; PRINCIPAL; }
+    { rank=same; TICKET; FEEDBACK; NOTIFICATION; }
+    { rank=same; QUESTION; SUBMISSION; }
+    { rank=same; RESPONSE; }
+}
